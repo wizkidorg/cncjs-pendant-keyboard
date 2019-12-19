@@ -35,13 +35,14 @@ var options = {
 };
 
 if (options.list) {
-	serialport.list(function(err, ports) {
-		if (err) {
+	serialport.list().then(
+		err => {
 			console.error(err);
 			process.exit(1);
-		}
-		ports.forEach(function(port) {
-			console.log(port.comName);
+			},
+		ports => {
+			ports.forEach(function(port) {
+			console.log(port.path);
 		});
 	});
 	return;
@@ -224,14 +225,15 @@ if (options.port) {
     return;
 }
 
-serialport.list(function(err, ports) {
-    if (err) {
-        console.error(err);
-        process.exit(1);
-    }
-    const choices = ports.map(function(port) {
-        return port.comName;
-    });
+serialport.list().then(
+	err => {
+	        console.error(err);
+	        process.exit(1);
+		},
+	ports => {
+		const choices = ports.map(function(port) {
+	        return port.path;
+		});
 
     inquirer.prompt([{
         type: 'list',
